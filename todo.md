@@ -1,0 +1,24 @@
+# Project TODO
+
+- [x] Basic homepage layout
+- [x] Navigation menu
+- [x] Pipeline page
+- [x] Dashboard page
+- [x] About page
+- [x] Genome Noir dark theme
+- [x] Circuit-trace backgrounds
+- [x] Fix Home.tsx conflict from full-stack upgrade
+- [x] Design database schema for CRISPR analysis data
+- [x] Create database tables for projects, gRNA candidates, analysis results
+- [ ] Build tRPC API routes for CRUD operations
+- [ ] Connect frontend Pipeline page to backend API
+- [ ] Connect frontend Dashboard page to backend API
+- [ ] Add project save/load functionality
+- [ ] Add gRNA candidate persistence
+- [ ] Add analysis results persistence
+- [ ] Write vitest tests for API routes
+- [ ] Install Kaggle CLI and configure credentials
+- [ ] Identify required CRISPR/gRNA datasets from Kaggle
+- [ ] Download CRISPR efficiency prediction dataset
+- [ ] Download CRISPR off-target dataset
+- [ ] Download sequence/genomic reference datasets

@@ -1,0 +1,12 @@
+{
+  "rs1042522": {
+    "gene": "TP53",
+    "clinical_significance": "Benign/Likely benign",
+    "hgvs": "c.215C>G (p.Arg72Pro)"
+  },
+  "rs28934571": {
+    "gene": "TP53",
+    "clinical_significance": "Pathogenic",
+    "hgvs": "c.818G>A (p.Arg273His)"
+  }
+}

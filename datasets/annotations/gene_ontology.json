@@ -1,0 +1,21 @@
+{
+  "TP53": {
+    "go_terms": [
+      "GO:0006915 (Apoptosis)",
+      "GO:0003677 (DNA binding)",
+      "GO:0005634 (Nucleus)"
+    ]
+  },
+  "EGFR": {
+    "go_terms": [
+      "GO:0007165 (Signal Transduction)",
+      "GO:0004714 (Transmembrane Receptor Protein Tyrosine Kinase)"
+    ]
+  },
+  "BRCA1": {
+    "go_terms": [
+      "GO:0006281 (DNA Repair)",
+      "GO:0000724 (Double-strand Break Repair)"
+    ]
+  }
+}

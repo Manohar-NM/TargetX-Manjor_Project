@@ -1,0 +1,10 @@
+{
+  "SpCas9": {
+    "uniprot_id": "Q99ZW2",
+    "organism": "Streptococcus pyogenes",
+    "active_sites": [
+      "D10",
+      "H840"
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "platform": "TargetX",
+  "version": "1.0.0",
+  "dataset_source": "Doench et al. (2016) Azimuth Rule Set 2 (5,312 gRNAs)",
+  "models": {
+    "random_forest": {
+      "file": "random_forest_efficiency_v1.joblib",
+      "r2_score": 0.6448,
+      "rmse": 0.0872,
+      "status": "ready"
+    },
+    "xgboost_gbr": {
+      "file": "xgboost_efficiency_v1.joblib",
+      "r2_score": 0.6954,
+      "rmse": 0.0808,
+      "status": "ready"
+    },
+    "lightgbm": {
+      "file": "lightgbm_efficiency_v1.joblib",
+      "r2_score": 0.6737,
+      "rmse": 0.0836,
+      "status": "ready"
+    },
+    "deephf_pytorch_cnn": {
+      "file": "deephf_cnn_attention_v1.pt",
+      "architecture": "1D CNN (kernel=3,5) + Multi-Head Self-Attention (num_heads=4) PyTorch",
+      "r2_score": 0.7302,
+      "rmse": 0.076,
+      "status": "ready"
+    },
+    "indelphi_repair": {
+      "file": "indelphi_repair_v1.joblib",
+      "architecture": "inDelphi Microhomology Deletion Predictor",
+      "status": "ready"
+    },
+    "thermodynamics_mfe": {
+      "file": "thermo_mfe_v1.json",
+      "model": "SantaLucia Nearest-Neighbor Free Energy \u0394G\u00b0 Engine",
+      "status": "ready"
+    },
+    "deepcrispr_autoencoder": {
+      "file": "deepcrispr_autoencoder_v1.pt",
+      "architecture": "PyTorch CNN + Autoencoder (Encoder-Decoder + Predictor)",
+      "dataset_paired": "DeepCRISPR Benchmark Dataset",
+      "status": "ready"
+    },
+    "deepspcas9_cnn": {
+      "file": "deepspcas9_cnn_v1.pt",
+      "architecture": "DeepSpCas9 Convolutional Neural Network (PyTorch)",
+      "dataset_paired": "DeepSpCas9 Benchmark Dataset",
+      "status": "ready"
+    },
+    "crispr_net_dnn": {
+      "file": "crispr_net_dnn_v1.pt",
+      "architecture": "CRISPR-Net Deep Neural Network Off-Target Predictor",
+      "dataset_paired": "GUIDE-seq + CHANGE-seq + CIRCLE-seq Datasets",
+      "status": "ready"
+    },
+    "cfd_score_predictor": {
+      "file": "cfd_mit_offtarget_v1.json",
+      "dataset_paired": "GUIDE-seq (Tsai 2015)",
+      "status": "ready"
+    },
+    "mit_offtarget_score": {
+      "file": "cfd_mit_offtarget_v1.json",
+      "dataset_paired": "GUIDE-seq (Tsai 2015)",
+      "status": "ready"
+    },
+    "ensemble_meta_model": {
+      "file": "ensemble_meta_model_v1.joblib",
+      "architecture": "Meta Stacking Ridge Regressor",
+      "sub_models": [
+        "Random Forest",
+        "XGBoost",
+        "LightGBM",
+        "DeepHF PyTorch",
+        "DeepCRISPR PyTorch"
+      ],
+      "status": "ready"
+    }
+  },
+  "feature_vector_length": 128
+}

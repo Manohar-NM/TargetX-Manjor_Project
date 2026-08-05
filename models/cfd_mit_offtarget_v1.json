@@ -1,0 +1,30 @@
+{
+  "model_cfd": "CFD Cutting Frequency Determination Matrix (Calibrated on GUIDE-seq)",
+  "model_mit": "MIT Position-Weighted Mismatch Penalty Algorithm (Calibrated on GUIDE-seq)",
+  "datasets_paired": [
+    "GUIDE-seq (Tsai 2015)"
+  ],
+  "position_weights_mit": [
+    0.0,
+    0.0,
+    0.014,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.011,
+    0.018,
+    0.034,
+    0.041,
+    0.064,
+    0.068,
+    0.086,
+    0.096,
+    0.124,
+    0.184,
+    0.238,
+    0.25
+  ],
+  "status": "ready"
+}
