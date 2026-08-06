@@ -147,17 +147,18 @@
     }
   }
 
-  /* Genome Noir glassmorphism panel */
+  /* Genome Noir glassmorphism panel — High contrast */
   .glass-panel {
-    background: oklch(0.16 0.02 245 / 0.6);
-    backdrop-filter: blur(12px);
-    border: 1px solid oklch(0.72 0.15 195 / 0.15);
+    background: oklch(0.14 0.02 245 / 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid oklch(0.72 0.15 195 / 0.2);
     border-radius: var(--radius-lg);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   }
 
   .glass-panel:hover {
-    border-color: oklch(0.72 0.15 195 / 0.3);
-    box-shadow: 0 0 20px oklch(0.72 0.15 195 / 0.08);
+    border-color: oklch(0.72 0.15 195 / 0.4);
+    box-shadow: 0 0 25px oklch(0.72 0.15 195 / 0.15);
   }
 
   /* Glow effects */

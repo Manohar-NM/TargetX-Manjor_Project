@@ -94,9 +94,22 @@ const fadeUp = {
   animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
 };
 
+import { generateTargetXPdfReport } from "@/lib/generatePdfReport";
+
 export default function Dashboard() {
   const handleExportReport = () => {
-    toast.success("Dashboard Analytics Report Exported!");
+    try {
+      generateTargetXPdfReport({
+        reportTitle: "TargetX Command Dashboard Analytics Report",
+        targetGene: "OsDREB1A / TP53",
+        organism: "Homo sapiens / Oryza sativa",
+        candidates: topCandidates,
+      });
+      toast.success("TargetX CRISPR Research PDF Report downloaded!");
+    } catch (err) {
+      console.error("PDF generation error:", err);
+      toast.error("Failed to generate PDF report.");
+    }
   };
 
   const handleCopyData = () => {

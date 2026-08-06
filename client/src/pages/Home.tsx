@@ -2,6 +2,7 @@
  * Home Page — TargetX Landing
  * Genome Noir: dark obsidian background, cyan bioluminescent accents,
  * asymmetric layout, glassmorphism panels, circuit-board traces
+ * Option 1: Submerged Glow & Balanced Background Dimming
  */
 import { useAuth } from "@/_core/hooks/useAuth";
 import { motion } from "framer-motion";
@@ -42,18 +43,16 @@ const pipelineStages = [
 ];
 
 export default function Home() {
-  // The useAuth hook provides authentication state.
-  // To implement login/logout, call logout(), or start login from an event
-  // handler: onClick={() => startLogin()} (imported from "@/const"). Never call
-  // startLogin() during render (no href={startLogin()}) — it mints a one-time
-  // nonce cookie and must run only at the moment of navigation.
   let { user, loading, error, isAuthenticated, logout } = useAuth();
 
   return (
-    <div className="min-h-screen flex bg-[#0a0e1a] circuit-bg">
+    <div className="min-h-screen flex bg-[#0a0e1a] circuit-bg relative overflow-x-hidden">
+      {/* Option 1: Smooth Background Gradient Overlay for Dimming Circuit Pattern under Content */}
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0e1a]/40 via-[#0a0e1a]/75 to-[#0a0e1a]/95 pointer-events-none z-0" />
+
       <Sidebar />
 
-      <main className="flex-1 ml-[220px] min-h-screen">
+      <main className="flex-1 ml-[220px] min-h-screen relative z-10">
         {/* Hero Section */}
         <section className="relative overflow-hidden px-8 pt-16 pb-20">
           {/* Background gradient overlay */}
@@ -72,15 +71,15 @@ export default function Home() {
             className="relative z-10 max-w-4xl"
           >
             <motion.div variants={fadeUp} className="flex items-center gap-3 mb-6">
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 backdrop-blur-md">
                 <div className="w-2 h-2 rounded-full bg-cyan-400" />
-                <span className="text-xs font-mono text-cyan-400">v1.0.0 — Research Preview</span>
+                <span className="text-xs font-mono text-cyan-300 font-semibold">v1.0.0 — Research Preview</span>
               </div>
             </motion.div>
 
             <motion.h1
               variants={fadeUp}
-              className="font-mono text-4xl lg:text-5xl font-bold text-white leading-tight mb-4"
+              className="font-mono text-4xl lg:text-5xl font-bold text-white leading-tight mb-4 drop-shadow-md"
             >
               AI-Powered{" "}
               <span className="text-cyan-400">CRISPR</span>
@@ -90,7 +89,7 @@ export default function Home() {
 
             <motion.p
               variants={fadeUp}
-              className="text-lg text-slate-400 max-w-xl mb-8 leading-relaxed"
+              className="text-lg text-slate-300 max-w-xl mb-8 leading-relaxed font-sans"
             >
               From biological goal to publication-ready gRNA candidates.
               TargetX combines ensemble ML models, SHAP explainability,
@@ -99,12 +98,12 @@ export default function Home() {
 
             <motion.div variants={fadeUp} className="flex items-center gap-4">
               <Link href="/pipeline">
-                <Button className="bg-cyan-500 hover:bg-cyan-400 text-[#0a0e1a] font-mono font-semibold px-6 h-11 gap-2">
+                <Button className="bg-cyan-500 hover:bg-cyan-400 text-[#0a0e1a] font-mono font-bold px-6 h-11 gap-2 glow-cyan">
                   Launch Pipeline <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
               <Link href="/dashboard">
-                <Button variant="outline" className="border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10 font-mono px-6 h-11">
+                <Button variant="outline" className="border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/15 font-mono px-6 h-11 backdrop-blur-md">
                   View Dashboard
                 </Button>
               </Link>
@@ -126,11 +125,11 @@ export default function Home() {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + i * 0.08, duration: 0.2 }}
-                className="glass-panel p-4"
+                className="glass-panel p-4 border border-cyan-500/20 hover:border-cyan-500/40 transition-all shadow-lg"
               >
                 <p className="font-mono text-2xl font-bold text-cyan-400">{stat.value}</p>
-                <p className="text-sm text-slate-300 mt-1">{stat.label}</p>
-                <p className="text-xs text-slate-500 font-mono">{stat.sub}</p>
+                <p className="text-sm text-slate-200 font-medium mt-1">{stat.label}</p>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">{stat.sub}</p>
               </motion.div>
             ))}
           </div>
@@ -144,15 +143,18 @@ export default function Home() {
             viewport={{ once: true }}
             className="mb-8"
           >
-            <h2 className="font-mono text-xl font-semibold text-slate-100 mb-2">Analysis Pipeline</h2>
-            <p className="text-sm text-slate-500">Eight-stage computational workflow from goal to report</p>
+            <h2 className="font-mono text-xl font-semibold text-slate-100 mb-2 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-cyan-400" />
+              Analysis Pipeline
+            </h2>
+            <p className="text-xs text-slate-300 font-mono">Eight-stage computational workflow from goal to report</p>
           </motion.div>
 
           <div className="relative">
             {/* Connecting line */}
-            <div className="absolute top-6 left-0 right-0 h-px bg-gradient-to-r from-cyan-500/30 via-cyan-500/50 to-cyan-500/30" />
+            <div className="absolute top-10 left-4 right-4 h-0.5 bg-gradient-to-r from-cyan-500/20 via-cyan-500/60 to-cyan-500/20 z-0" />
 
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 relative z-10">
               {pipelineStages.map((stage, i) => (
                 <motion.div
                   key={stage.label}
@@ -160,13 +162,13 @@ export default function Home() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.06 }}
-                  className="flex flex-col items-center text-center"
+                  className="glass-panel p-4 flex flex-col items-center text-center bg-[#0d1117]/85 backdrop-blur-md border border-cyan-500/25 hover:border-cyan-500/50 hover:bg-[#0d1117]/95 transition-all duration-200 shadow-[0_0_15px_rgba(6,182,212,0.12)] h-full"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-[#0d1117] border border-cyan-500/20 flex items-center justify-center mb-3 relative z-10 hover:border-cyan-500/50 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-[#0a0e1a] border border-cyan-500/30 flex items-center justify-center mb-3 relative z-10 hover:border-cyan-500/60 transition-colors shadow-inner">
                     <stage.icon className="w-5 h-5 text-cyan-400" />
                   </div>
-                  <p className="text-sm font-medium text-slate-200">{stage.label}</p>
-                  <p className="text-xs text-slate-500 font-mono mt-0.5">{stage.desc}</p>
+                  <p className="text-sm font-bold text-slate-100 font-mono mb-1">{stage.label}</p>
+                  <p className="text-xs text-cyan-300 font-mono font-medium">{stage.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -175,7 +177,10 @@ export default function Home() {
 
         {/* Feature Cards */}
         <section className="px-8 pb-20">
-          <h2 className="font-mono text-xl font-semibold text-slate-100 mb-8">Core Capabilities</h2>
+          <h2 className="font-mono text-xl font-semibold text-slate-100 mb-8 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-cyan-400" />
+            Core Capabilities
+          </h2>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {[
@@ -222,20 +227,20 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="glass-panel p-5 group hover:glow-cyan-subtle transition-all duration-200"
+                className="glass-panel p-5 group hover:glow-cyan-subtle border border-cyan-500/20 hover:border-cyan-500/40 transition-all duration-200"
               >
                 <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-lg bg-cyan-500/10 flex items-center justify-center flex-shrink-0 border border-cyan-500/15 group-hover:border-cyan-500/30 transition-colors">
+                  <div className="w-10 h-10 rounded-lg bg-cyan-500/15 flex items-center justify-center flex-shrink-0 border border-cyan-500/30 group-hover:border-cyan-500/50 transition-colors shadow-inner">
                     <card.icon className="w-5 h-5 text-cyan-400" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-1.5">
                       <h3 className="font-mono text-sm font-semibold text-slate-100">{card.title}</h3>
-                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-400 border border-cyan-500/15">
+                      <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/25 font-bold">
                         {card.tag}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-400 leading-relaxed">{card.desc}</p>
+                    <p className="text-sm text-slate-300 leading-relaxed font-sans">{card.desc}</p>
                   </div>
                 </div>
               </motion.div>
@@ -245,8 +250,11 @@ export default function Home() {
 
         {/* Tech Stack */}
         <section className="px-8 pb-20">
-          <div className="glass-panel p-6">
-            <h3 className="font-mono text-sm font-semibold text-slate-300 mb-4">Technology Stack</h3>
+          <div className="glass-panel p-6 border border-cyan-500/25">
+            <h3 className="font-mono text-sm font-semibold text-slate-200 mb-4 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+              Technology Stack
+            </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
                 { label: "React 19", sub: "TypeScript" },
@@ -258,11 +266,11 @@ export default function Home() {
                 { label: "SHAP", sub: "Explainability" },
                 { label: "PostgreSQL", sub: "Database" },
               ].map((tech) => (
-                <div key={tech.label} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-500/60" />
+                <div key={tech.label} className="flex items-center gap-2.5 p-2 rounded-lg bg-[#0a0e1a]/60 border border-cyan-500/10">
+                  <div className="w-2 h-2 rounded-full bg-cyan-400 glow-cyan-subtle" />
                   <div>
-                    <p className="text-sm font-mono text-slate-200">{tech.label}</p>
-                    <p className="text-xs text-slate-500">{tech.sub}</p>
+                    <p className="text-sm font-mono text-slate-100 font-bold">{tech.label}</p>
+                    <p className="text-xs text-slate-400 font-mono">{tech.sub}</p>
                   </div>
                 </div>
               ))}

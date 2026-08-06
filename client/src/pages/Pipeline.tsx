@@ -8,6 +8,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 import { Button } from "@/components/ui/button";
+import { useProject } from "@/contexts/ProjectContext";
+import { generateTargetXPdfReport } from "@/lib/generatePdfReport";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
@@ -87,15 +89,18 @@ export default function Pipeline() {
   };
 
   const downloadReport = () => {
-    const reportText = `TARGETX RESEARCH REPORT\nTarget: ${goal}\nGenerated: ${new Date().toISOString()}\nStatus: 8-Stage Pipeline Complete\nTop Candidate: Guide_01 (ATGGAACGTTCTAGCCGTCA) Score: 0.920\n`;
-    const blob = new Blob([reportText], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `targetx_report_${new Date().getTime()}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-    toast.success("Report downloaded!");
+    try {
+      generateTargetXPdfReport({
+        reportTitle: "TargetX CRISPR Analysis Pipeline Report",
+        goal,
+        targetGene: inputMode === "gene" ? goal : "OsDREB1A / TP53",
+        organism: "Homo sapiens / Oryza sativa",
+      });
+      toast.success("TargetX CRISPR Research PDF Report downloaded!");
+    } catch (err) {
+      console.error("PDF download error:", err);
+      toast.error("Failed to generate PDF report.");
+    }
   };
 
   const copyData = () => {
