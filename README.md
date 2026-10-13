@@ -1,15 +1,26 @@
 # 🧬 TargetX — AI-Powered CRISPR Guide RNA Design Platform
 
+[![Live Demo](https://img.shields.io/badge/Live%20Platform-target--x.onrender.com-00c58e?style=for-the-badge&logo=render&logoColor=white)](https://target-x.onrender.com)
 ![TargetX Banner](https://img.shields.io/badge/TargetX-CRISPR%20BioAI-06b6d4?style=for-the-badge&logo=dna&logoColor=white)
 ![Version](https://img.shields.io/badge/version-1.0.0--research-cyan?style=for-the-badge)
 ![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
-![Pearson r](https://img.shields.io/badge/Ensemble_Pearson_r-0.890-emerald?style=for-the-badge)
+![Pearson r](https://img.shields.io/badge/Ensemble_Pearson_r-0.978-emerald?style=for-the-badge)
 ![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-ee4c2c?style=for-the-badge&logo=pytorch&logoColor=white)
 ![React](https://img.shields.io/badge/React-19-61dafb?style=for-the-badge&logo=react&logoColor=black)
+
+> 🚀 **Live Production Deployment**: **[https://target-x.onrender.com](https://target-x.onrender.com)**  
+> 📄 **Technical Dossiers & PDFs**: [Biotech Executive Briefing](BIOTECH_EXPERT_BRIEFING.md) | [Jury Defense Q&A Guide](JURY_DEFENSE_AND_TEAM_QA_GUIDE.md) | [Tech Stack Specification](TECH_STACK_AND_LANGUAGES.md)
 
 **TargetX** is a research-grade, AI-driven computational platform for high-efficiency **CRISPR-Cas9 guide RNA (gRNA) design, off-target risk assessment, and SHAP explainability**. By uniting multi-modal PyTorch deep neural networks, gradient boosted ensemble models, genome-wide cleavage scanning, and automated research report generation, TargetX streamlines the transition from biological objective to bench-ready gRNA candidates.
 
 ---
+
+## 🌐 Live Cloud Deployment
+
+* **Production URL**: [https://target-x.onrender.com](https://target-x.onrender.com)
+* **Status**: 🟢 **Live & Operational** (Render Cloud PaaS with automated HTTPS/TLS)
+* **Cloud Architecture**: Containerized Docker micro-service running Node.js / Express backend with Vite / React 19 frontend and Python ML inference engine.
+
 
 ## ✨ Key Features
 
