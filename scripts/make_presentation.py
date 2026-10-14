@@ -27,6 +27,19 @@ FONT_SANS = "Calibri"
 PROJECT_FOOTER = "TargetX: In Silico CRISPR/Cas9 Guide RNA Design Platform"
 TOTAL_SLIDES = 17
 
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+LOGO_PATH = os.path.join(BASE_DIR, "assets", "alvas_logo.png")
+if not os.path.exists(LOGO_PATH):
+    LOGO_PATH = os.path.join(os.getcwd(), "assets", "alvas_logo.png")
+
+def add_logo(s, x=12.45, y=0.07, w=0.55, h=0.62):
+    if os.path.exists(LOGO_PATH):
+        try:
+            s.shapes.add_picture(LOGO_PATH, Inches(x), Inches(y), Inches(w), Inches(h))
+        except Exception as e:
+            pass
+
 prs = Presentation()
 prs.slide_width, prs.slide_height = Inches(13.333), Inches(7.5)
 BLANK = prs.slide_layouts[6]
@@ -115,6 +128,7 @@ def new_slide(title, notes, header=True):
         # Solid AIET Top Red Banner
         rect(s, 0, 0, 13.333, 0.75, RED_BANNER)
         label(s, 0.6, 0.12, 11.5, 0.55, title, 22, WHITE, True, font=FONT_SANS, anchor=MSO_ANCHOR.MIDDLE)
+        add_logo(s, 12.45, 0.07, 0.55, 0.62)
     footer(s)
     s.notes_slide.notes_text_frame.text = notes
     return s
@@ -145,6 +159,9 @@ N += 1
 s1 = prs.slides.add_slide(BLANK)
 s1.background.fill.solid()
 s1.background.fill.fore_color.rgb = BG_WHITE
+
+# Top right Alva's logo on title slide
+add_logo(s1, 12.4, 0.12, 0.58, 0.66)
 
 # Top rounded red banner
 rect(s1, 0.4, 0.6, 12.533, 1.35, RED_BANNER, shape=MSO_SHAPE.ROUNDED_RECTANGLE, adj=0.15)
@@ -586,6 +603,9 @@ body(s16, 1.2, 2.35, 11.0, 4.2, summary_points, size=18, bullet=True, space=12)
 # SLIDE 17: THANK YOU (Exact AIET Layout)
 # ==============================================================================
 s17 = new_slide("", "Thank you respected jury members and faculty. We welcome your questions.", header=False)
+
+# Top right Alva's logo on thank you slide
+add_logo(s17, 12.4, 0.2, 0.6, 0.68)
 
 label(s17, 0.6, 2.6, 12.133, 1.2, "Thank You", 56, TEXT_BLACK, True, align=PP_ALIGN.CENTER, font=FONT_SERIF)
 label(s17, 0.6, 3.9, 12.133, 0.6, "Questions & Feedback?", 26, RED_BANNER, True, align=PP_ALIGN.CENTER)
