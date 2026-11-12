@@ -1,43 +1,42 @@
 /*
  * Pipeline Page — Interactive CRISPR Analysis Workflow
- * 8-stage pipeline with progress tracking and stage-specific panels
- * Genome Noir: glass panels, cyan glow, monospace data
+ * 8-stage pipeline with progress tracking, stage-specific panels,
+ * clean form controls (labels above, helper text below), and Phosphor icons.
  */
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
-import { Button } from "@/components/ui/button";
-import { useProject } from "@/contexts/ProjectContext";
 import { generateTargetXPdfReport } from "@/lib/generatePdfReport";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import {
-  BrainCircuit,
+  Brain,
   Dna,
   Target,
-  Microscope,
-  BarChart3,
+  Flask,
+  ChartBar,
   ShieldCheck,
-  Sparkles,
+  Sparkle,
   FileText,
   Play,
-  CheckCircle2,
-  Loader2,
-  ArrowRight,
+  CheckCircle,
+  CircleNotch,
+  ArrowClockwise,
+  DownloadSimple,
   Copy,
-} from "lucide-react";
+} from "@phosphor-icons/react";
 import { toast } from "sonner";
 
 const stages = [
-  { id: 0, icon: BrainCircuit, label: "AI Understanding", color: "cyan" },
-  { id: 1, icon: Dna, label: "Gene ID", color: "cyan" },
-  { id: 2, icon: Target, label: "PAM Detection", color: "cyan" },
-  { id: 3, icon: Microscope, label: "gRNA Generation", color: "cyan" },
-  { id: 4, icon: BarChart3, label: "Efficiency", color: "cyan" },
-  { id: 5, icon: ShieldCheck, label: "Off-target", color: "cyan" },
-  { id: 6, icon: Sparkles, label: "Explainability", color: "cyan" },
-  { id: 7, icon: FileText, label: "Report", color: "cyan" },
+  { id: 0, icon: Brain, label: "AI Parsing" },
+  { id: 1, icon: Dna, label: "Gene ID" },
+  { id: 2, icon: Target, label: "PAM Scan" },
+  { id: 3, icon: Flask, label: "gRNA Pool" },
+  { id: 4, icon: ChartBar, label: "Efficiency" },
+  { id: 5, icon: ShieldCheck, label: "Off-target" },
+  { id: 6, icon: Sparkle, label: "SHAP" },
+  { id: 7, icon: FileText, label: "Report" },
 ];
 
 type PipelineStatus = "idle" | "running" | "complete";
@@ -48,7 +47,9 @@ interface StageResult {
 }
 
 export default function Pipeline() {
-  const [goal, setGoal] = useState("Improve drought resistance in rice (Oryza sativa) by targeting ABA signaling pathways");
+  const [goal, setGoal] = useState(
+    "Improve drought resistance in rice (Oryza sativa) by targeting ABA signaling pathways"
+  );
   const [customSequence, setCustomSequence] = useState("");
   const [inputMode, setInputMode] = useState<"nlp" | "gene" | "sequence">("nlp");
   const [pipelineStatus, setPipelineStatus] = useState<PipelineStatus>("idle");
@@ -62,7 +63,6 @@ export default function Pipeline() {
     setStageResults(stages.map(() => ({ status: "pending" })));
     setCurrentStage(0);
 
-    // Smooth stage progress execution
     let stage = 0;
     const interval = setInterval(() => {
       setStageResults((prev) => {
@@ -79,7 +79,7 @@ export default function Pipeline() {
         setPipelineStatus("complete");
         toast.success("8-Stage CRISPR Analysis Pipeline Execution Complete!");
       }
-    }, 1500);
+    }, 1200);
   };
 
   const resetPipeline = () => {
@@ -104,24 +104,49 @@ export default function Pipeline() {
   };
 
   const copyData = () => {
-    navigator.clipboard.writeText(JSON.stringify({ goal, status: "complete", topGuide: "ATGGAACGTTCTAGCCGTCA", score: 0.92 }, null, 2));
+    navigator.clipboard.writeText(
+      JSON.stringify(
+        { goal, status: "complete", topGuide: "ATGGAACGTTCTAGCCGTCA", score: 0.92 },
+        null,
+        2
+      )
+    );
     toast.success("Copied candidate data to clipboard!");
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0a0e1a] circuit-bg-subtle">
+    <div className="flex min-h-[100dvh] circuit-bg">
       <Sidebar />
 
-      <div className="flex-1 ml-[220px] flex flex-col">
+      <main className="flex-1 min-w-0 flex flex-col min-h-[100dvh]">
         <TopBar
           title="Analysis Pipeline"
-          subtitle="CRISPR-Cas9 gRNA Design Workflow"
-          pipelineStage={pipelineStatus === "running" ? `Stage ${currentStage + 1}/8` : pipelineStatus === "complete" ? "Complete" : "Ready"}
+          subtitle="CRISPR-Cas9 Guide RNA Design Workflow"
+          pipelineStage={
+            pipelineStatus === "running"
+              ? `Stage ${currentStage + 1}/8`
+              : pipelineStatus === "complete"
+              ? "Complete"
+              : "Ready"
+          }
         />
 
-        <div className="flex-1 p-6 overflow-auto relative z-10">
-          {/* Pipeline Progress */}
-          <div className="mb-8">
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-10 xl:px-12 py-10 md:py-16">
+          {/* Stepper Progress Bar */}
+          <div className="tx-card p-6 mb-8">
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                Workflow Progress
+              </span>
+              <span className="font-mono text-xs text-zinc-600">
+                {pipelineStatus === "running"
+                  ? `Running stage ${currentStage + 1} of 8...`
+                  : pipelineStatus === "complete"
+                  ? "All 8 stages executed successfully"
+                  : "Awaiting execution trigger"}
+              </span>
+            </div>
+
             <div className="flex items-center gap-2">
               {stages.map((stage, i) => {
                 const result = stageResults[i];
@@ -131,31 +156,28 @@ export default function Pipeline() {
 
                 return (
                   <div key={stage.id} className="flex items-center flex-1">
-                    <motion.div
-                      animate={{
-                        scale: isActive ? 1.1 : 1,
-                        borderColor: isComplete ? "rgba(6, 182, 212, 0.5)" : isActive ? "rgba(6, 182, 212, 0.8)" : "rgba(6, 182, 212, 0.15)",
-                      }}
-                      className={`w-10 h-10 rounded-lg flex items-center justify-center border transition-colors duration-200 ${
+                    <div
+                      className={`w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-200 ${
                         isComplete
-                          ? "bg-cyan-500/20 border-cyan-500/40"
+                          ? "bg-white border-[#0F766E] text-[#0F766E] shadow-2xs"
                           : isActive
-                          ? "bg-cyan-500/10 border-cyan-500/60 pulse-glow"
-                          : "bg-[#0d1117] border-cyan-500/15"
+                          ? "bg-white border-[#0F766E] ring-2 ring-[#0F766E]/20 text-[#0F766E]"
+                          : "bg-white border-zinc-200/80 text-zinc-400"
                       }`}
+                      title={stage.label}
                     >
                       {isComplete ? (
-                        <CheckCircle2 className="w-5 h-5 text-cyan-400" />
+                        <CheckCircle size={18} weight="fill" className="text-[#0F766E]" />
                       ) : isActive ? (
-                        <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />
+                        <CircleNotch size={18} weight="regular" className="text-[#0F766E] animate-spin" />
                       ) : (
-                        <Icon className={`w-4 h-4 ${isActive ? "text-cyan-300" : "text-slate-600"}`} />
+                        <Icon size={18} weight="regular" />
                       )}
-                    </motion.div>
+                    </div>
                     {i < stages.length - 1 && (
                       <div
                         className={`flex-1 h-[2px] mx-1 transition-colors duration-300 ${
-                          isComplete ? "bg-cyan-500/40" : "bg-slate-800"
+                          isComplete ? "bg-[#0F766E]" : "bg-zinc-200"
                         }`}
                       />
                     )}
@@ -163,88 +185,173 @@ export default function Pipeline() {
                 );
               })}
             </div>
-            <div className="flex justify-between mt-2 px-1">
+
+            <div className="flex justify-between mt-3 px-0.5">
               {stages.map((s) => (
-                <span key={s.id} className="text-[10px] font-mono text-slate-500 w-10 text-center truncate">
+                <span
+                  key={s.id}
+                  className="text-[11px] font-sans font-medium text-zinc-600 w-12 text-center truncate"
+                >
                   {s.label}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Goal Input Section */}
-          <div className="glass-panel p-6 mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-mono text-sm font-semibold text-slate-200 flex items-center gap-2">
-                <BrainCircuit className="w-4 h-4 text-cyan-400" />
-                Biological Goal Input
-              </h3>
-              <div className="flex gap-2">
-                {(["nlp", "gene", "sequence"] as const).map((mode) => (
+          {/* Goal Input Section: Labels above, gap-2, helper text below */}
+          <div className="tx-card p-6 md:p-8 mb-8">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6 pb-5 border-b border-zinc-200/60">
+              <div>
+                <h3 className="font-sans text-base font-semibold text-zinc-950 flex items-center gap-2">
+                  <Brain size={18} weight="regular" className="text-[#0F766E]" />
+                  Biological Target Specification
+                </h3>
+                <p className="font-sans text-xs text-zinc-500 mt-0.5">
+                  Specify your research objective, target gene identifier, or raw sequence.
+                </p>
+              </div>
+
+              {/* Input Mode Selector */}
+              <div className="flex items-center gap-1.5 p-1 rounded-xl bg-zinc-100 border border-zinc-200/60">
+                {(
+                  [
+                    { id: "nlp", label: "Natural Language" },
+                    { id: "gene", label: "Gene Symbol" },
+                    { id: "sequence", label: "DNA Sequence" },
+                  ] as const
+                ).map((mode) => (
                   <button
-                    key={mode}
-                    onClick={() => setInputMode(mode)}
-                    className={`px-3 py-1 text-xs font-mono rounded transition-colors ${
-                      inputMode === mode
-                        ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/40"
-                        : "text-slate-500 hover:text-slate-300"
+                    key={mode.id}
+                    onClick={() => setInputMode(mode.id)}
+                    className={`px-3 py-1.5 text-xs font-sans font-medium rounded-lg transition-all ${
+                      inputMode === mode.id
+                        ? "bg-white text-zinc-950 font-semibold shadow-2xs border border-zinc-200/80"
+                        : "text-zinc-600 hover:text-zinc-950"
                     }`}
                   >
-                    {mode.toUpperCase()}
+                    {mode.label}
                   </button>
                 ))}
               </div>
             </div>
 
-            {inputMode === "nlp" && (
-              <Textarea
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                placeholder="Describe your biological goal..."
-                className="bg-[#0a0e1a]/80 border-cyan-500/20 text-slate-200 font-mono text-xs focus:border-cyan-500/50 min-h-[80px] mb-4"
-              />
-            )}
+            {/* Input Form with clean labels and helper text */}
+            <div className="space-y-4">
+              {inputMode === "nlp" && (
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="goal-textarea"
+                    className="font-sans text-xs font-semibold text-zinc-900"
+                  >
+                    Natural Language Research Objective
+                  </label>
+                  <Textarea
+                    id="goal-textarea"
+                    value={goal}
+                    onChange={(e) => setGoal(e.target.value)}
+                    placeholder="Describe your editing intent (e.g., target OsDREB1A to enhance osmotic tolerance in Oryza sativa)..."
+                    className="bg-white border-zinc-200/80 rounded-xl text-zinc-900 font-sans text-sm focus-visible:ring-2 focus-visible:ring-[#0F766E] min-h-[96px] shadow-2xs"
+                  />
+                  <span className="font-sans text-xs text-zinc-500">
+                    The NLP parser extracts organism, gene symbol, and knock-out/knock-in intent automatically.
+                  </span>
+                </div>
+              )}
 
-            {inputMode === "sequence" && (
-              <Textarea
-                value={customSequence}
-                onChange={(e) => setCustomSequence(e.target.value)}
-                placeholder="Enter raw DNA sequence (FASTA format accepted)..."
-                className="bg-[#0a0e1a]/80 border-cyan-500/20 text-cyan-300 font-mono text-xs focus:border-cyan-500/50 min-h-[80px] mb-4 uppercase"
-              />
-            )}
+              {inputMode === "sequence" && (
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="sequence-textarea"
+                    className="font-sans text-xs font-semibold text-zinc-900"
+                  >
+                    Target Genomic DNA Sequence (FASTA or Raw)
+                  </label>
+                  <Textarea
+                    id="sequence-textarea"
+                    value={customSequence}
+                    onChange={(e) => setCustomSequence(e.target.value)}
+                    placeholder="Paste 5' to 3' nucleotide sequence (A, C, G, T)..."
+                    className="bg-white border-zinc-200/80 rounded-xl text-zinc-900 font-mono text-xs focus-visible:ring-2 focus-visible:ring-[#0F766E] min-h-[96px] uppercase shadow-2xs"
+                  />
+                  <span className="font-sans text-xs text-zinc-500">
+                    Supports up to 50,000 base pairs. PAM sites (NGG) will be identified on both strands.
+                  </span>
+                </div>
+              )}
 
-            {inputMode === "gene" && (
-              <Input
-                value={goal}
-                onChange={(e) => setGoal(e.target.value)}
-                placeholder="Enter Gene Symbol (e.g. OsDREB1A, TP53, CASP3)..."
-                className="bg-[#0a0e1a]/80 border-cyan-500/20 text-slate-200 font-mono text-xs focus:border-cyan-500/50 mb-4"
-              />
-            )}
+              {inputMode === "gene" && (
+                <div className="flex flex-col gap-2">
+                  <label
+                    htmlFor="gene-input"
+                    className="font-sans text-xs font-semibold text-zinc-900"
+                  >
+                    Gene Symbol or Transcript ID
+                  </label>
+                  <Input
+                    id="gene-input"
+                    value={goal}
+                    onChange={(e) => setGoal(e.target.value)}
+                    placeholder="e.g., OsDREB1A, TP53, BRCA1, CASP3"
+                    className="bg-white border-zinc-200/80 rounded-xl text-zinc-900 font-sans text-sm focus-visible:ring-2 focus-visible:ring-[#0F766E] shadow-2xs"
+                  />
+                  <span className="font-sans text-xs text-zinc-500">
+                    Matches official NCBI Entrez and Ensembl reference databases.
+                  </span>
+                </div>
+              )}
 
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4 text-xs font-mono text-slate-500">
-                <span>PAM: <strong className="text-slate-300">SpCas9 (NGG)</strong></span>
-                <span>Organism: <strong className="text-slate-300">Oryza sativa (Rice)</strong></span>
-                <span>Ensemble: <strong className="text-cyan-400">XGBoost + LightGBM + RF</strong></span>
-              </div>
-              <div className="flex gap-3">
-                {pipelineStatus === "running" ? (
-                  <Button disabled className="bg-cyan-500/20 border border-cyan-500/40 text-cyan-400 font-mono text-xs">
-                    <Loader2 className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                    Running Pipeline...
-                  </Button>
-                ) : pipelineStatus === "complete" ? (
-                  <Button onClick={resetPipeline} variant="outline" className="border-slate-700 text-slate-300 font-mono text-xs">
-                    Reset Pipeline
-                  </Button>
-                ) : (
-                  <Button onClick={runPipeline} className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-mono text-xs font-bold glow-cyan">
-                    <Play className="w-3.5 h-3.5 mr-1.5 fill-current" />
-                    Launch Pipeline
-                  </Button>
-                )}
+              {/* Parameters & Action Buttons */}
+              <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4 border-t border-zinc-200/60">
+                <div className="flex flex-wrap items-center gap-4 text-xs font-sans text-zinc-600">
+                  <span>
+                    PAM: <strong className="text-zinc-950 font-medium">SpCas9 (NGG)</strong>
+                  </span>
+                  <span className="text-zinc-300">·</span>
+                  <span>
+                    Organism: <strong className="text-zinc-950 font-medium">Oryza sativa / Homo sapiens</strong>
+                  </span>
+                  <span className="text-zinc-300">·</span>
+                  <span>
+                    Model Ensemble: <strong className="text-[#0F766E] font-medium">XGBoost + LightGBM + RF</strong>
+                  </span>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  {pipelineStatus === "running" ? (
+                    <button
+                      disabled
+                      className="tx-btn-primary px-5 h-11 text-xs font-medium flex items-center gap-2 opacity-80 cursor-not-allowed"
+                    >
+                      <CircleNotch size={15} weight="regular" className="animate-spin text-[#0F766E]" />
+                      Running Pipeline...
+                    </button>
+                  ) : pipelineStatus === "complete" ? (
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={resetPipeline}
+                        className="tx-btn-secondary px-4 h-11 text-xs font-medium flex items-center gap-1.5"
+                      >
+                        <ArrowClockwise size={15} weight="regular" />
+                        Reset
+                      </button>
+                      <button
+                        onClick={downloadReport}
+                        className="tx-btn-primary px-5 h-11 text-xs font-medium flex items-center gap-2"
+                      >
+                        <DownloadSimple size={15} weight="regular" />
+                        Download Report
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={runPipeline}
+                      className="tx-btn-primary px-6 h-11 text-xs font-medium flex items-center gap-2 shadow-sm"
+                    >
+                      <Play size={15} weight="fill" className="text-white" />
+                      Launch Pipeline
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -256,116 +363,178 @@ export default function Pipeline() {
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
+                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-8"
               >
-                {/* Stage 1: AI Understanding */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[0].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <BrainCircuit className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">AI Goal Parsing</h4>
-                    {stageResults[0].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                {/* Stage 1: AI Parsing */}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[0].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Brain size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        AI Goal Parsing
+                      </h4>
+                    </div>
+                    {stageResults[0].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[0].status === "complete" && (
-                    <div className="space-y-2 text-xs font-mono">
-                      <div className="p-2 rounded bg-[#0a0e1a]/60 border border-cyan-500/10">
-                        <span className="text-slate-500">Matched Genes: </span>
-                        <span className="text-cyan-400 font-bold">OsDREB1A, OsNAC6, OsLEA3, OsPP2C</span>
+                    <div className="space-y-2.5 text-xs">
+                      <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <span className="text-zinc-500 font-sans block mb-1">
+                          Mapped Genes
+                        </span>
+                        <span className="font-mono font-semibold text-zinc-950">
+                          OsDREB1A, OsNAC6, OsLEA3
+                        </span>
                       </div>
-                      <div className="p-2 rounded bg-[#0a0e1a]/60 border border-cyan-500/10">
-                        <span className="text-slate-500">Primary Target: </span>
-                        <span className="text-slate-200">OsDREB1A (LOC_Os09g35010)</span>
+                      <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <span className="text-zinc-500 font-sans block mb-1">
+                          Primary Reference Locus
+                        </span>
+                        <span className="font-mono text-zinc-800">
+                          OsDREB1A (LOC_Os09g35010)
+                        </span>
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Stage 2: PAM Detection */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[2].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Target className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">PAM Detection</h4>
-                    {stageResults[2].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[2].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Target size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        PAM Scanning
+                      </h4>
+                    </div>
+                    {stageResults[2].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[2].status === "complete" && (
-                    <div className="space-y-2 text-xs font-mono">
-                      <div className="flex justify-between text-slate-400">
-                        <span>Detected PAMs:</span>
-                        <span className="text-cyan-400 font-bold">23 sites</span>
+                    <div className="space-y-2.5 text-xs">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <span className="font-sans text-zinc-500">Detected PAM Sites</span>
+                        <span className="font-mono font-semibold text-zinc-950">23 sites</span>
                       </div>
-                      <div className="p-2 rounded bg-[#0a0e1a]/80 font-mono text-[10px] text-cyan-300 border border-cyan-500/20 overflow-x-auto">
-                        5' ATGGAACGTTCTAGCCGTCAGG 3'
+                      <div className="p-3 rounded-xl bg-zinc-50 border border-zinc-200/70 font-mono text-[11px] text-zinc-900 overflow-x-auto">
+                        5' ATGGAACGTTCTAGCCGTCA <strong className="text-[#0F766E]">AGG</strong> 3'
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Stage 3: gRNA Candidate Generation */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[3].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Microscope className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">gRNA Candidates</h4>
-                    {stageResults[3].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                {/* Stage 3: gRNA Pool Generation */}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[3].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Flask size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        Candidate Guides
+                      </h4>
+                    </div>
+                    {stageResults[3].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[3].status === "complete" && (
-                    <div className="space-y-2 text-xs font-mono">
-                      <div className="flex justify-between text-slate-400">
-                        <span>Generated:</span>
-                        <span className="text-slate-200">47 guides</span>
+                    <div className="space-y-2.5 text-xs">
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <span className="font-sans text-zinc-500">Filtered Candidates</span>
+                        <span className="font-mono font-semibold text-zinc-950">47 guides</span>
                       </div>
-                      <div className="flex justify-between text-slate-400">
-                        <span>GC range:</span>
-                        <span className="text-slate-200">35% – 75%</span>
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <span className="font-sans text-zinc-500">GC Proportion Range</span>
+                        <span className="font-mono font-semibold text-zinc-950">35% – 70%</span>
                       </div>
                     </div>
                   )}
                 </div>
 
                 {/* Stage 4: Efficiency Prediction */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[4].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <BarChart3 className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">Efficiency Prediction</h4>
-                    {stageResults[4].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[4].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <ChartBar size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        Cutting Efficiency
+                      </h4>
+                    </div>
+                    {stageResults[4].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[4].status === "complete" && (
-                    <div className="space-y-2 text-xs font-mono">
+                    <div className="space-y-2.5 text-xs">
                       <div className="grid grid-cols-3 gap-2 text-center">
-                        <div className="p-2 rounded bg-[#0a0e1a]/60">
-                          <div className="text-[10px] text-slate-500">XGBoost</div>
-                          <div className="text-cyan-400 font-bold">0.87</div>
+                        <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                          <span className="text-[10px] text-zinc-500 block font-sans">XGBoost</span>
+                          <span className="font-mono font-semibold text-zinc-950">0.932</span>
                         </div>
-                        <div className="p-2 rounded bg-[#0a0e1a]/60">
-                          <div className="text-[10px] text-slate-500">LightGBM</div>
-                          <div className="text-cyan-400 font-bold">0.84</div>
+                        <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                          <span className="text-[10px] text-zinc-500 block font-sans">LightGBM</span>
+                          <span className="font-mono font-semibold text-zinc-950">0.914</span>
                         </div>
-                        <div className="p-2 rounded bg-[#0a0e1a]/60">
-                          <div className="text-[10px] text-slate-500">RandomForest</div>
-                          <div className="text-cyan-400 font-bold">0.81</div>
+                        <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                          <span className="text-[10px] text-zinc-500 block font-sans">RF</span>
+                          <span className="font-mono font-semibold text-zinc-950">0.915</span>
                         </div>
                       </div>
-                      <div className="text-center pt-1 text-[11px] text-slate-400">
-                        Ensemble Pearson r: <span className="text-cyan-300 font-bold">0.89</span>
+                      <div className="text-center pt-1 font-sans text-xs text-zinc-600">
+                        Ensemble Score: <span className="font-mono font-bold text-zinc-950">0.920</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                {/* Stage 5: Off-target Risk */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[5].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">Off-target Risk</h4>
-                    {stageResults[5].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                {/* Stage 5: Off-Target Analysis */}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[5].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <ShieldCheck size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        Off-Target Risk
+                      </h4>
+                    </div>
+                    {stageResults[5].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[5].status === "complete" && (
-                    <div className="space-y-2 text-xs font-mono">
-                      <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-full border-2 border-emerald-500/60 flex items-center justify-center font-bold text-emerald-400">
+                    <div className="space-y-2.5 text-xs">
+                      <div className="flex items-center gap-3 p-3 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                        <div className="w-10 h-10 rounded-full border border-[#0F766E] bg-teal-50 flex items-center justify-center font-mono font-bold text-[#0F766E]">
                           0.18
                         </div>
                         <div>
-                          <div className="font-bold text-emerald-400">LOW RISK</div>
-                          <div className="text-[10px] text-slate-500">Genome-wide scan clean</div>
+                          <span className="font-sans font-semibold text-zinc-950 block">
+                            Low Cleavage Risk
+                          </span>
+                          <span className="text-[11px] text-zinc-500 font-sans">
+                            Genome-wide scan verified
+                          </span>
                         </div>
                       </div>
                     </div>
@@ -373,29 +542,47 @@ export default function Pipeline() {
                 </div>
 
                 {/* Stage 6: SHAP Explainability */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[6].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <Sparkles className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">SHAP Explainability</h4>
-                    {stageResults[6].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 ${
+                    stageResults[6].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <Sparkle size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        SHAP Explainability
+                      </h4>
+                    </div>
+                    {stageResults[6].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[6].status === "complete" && (
-                    <div className="space-y-1 text-[10px] font-mono">
+                    <div className="space-y-2 text-[11px] font-sans">
                       {[
-                        { feature: "gc_content", contribution: "+0.124", positive: true },
+                        { feature: "gc_content", contribution: "+0.142", positive: true },
                         { feature: "position_1_G", contribution: "+0.087", positive: true },
                         { feature: "dinucleotide_GG", contribution: "+0.053", positive: true },
-                        { feature: "homopolymer_run_max", contribution: "-0.031", positive: false },
+                        { feature: "homopolymer_run", contribution: "-0.031", positive: false },
                       ].map((f) => (
                         <div key={f.feature} className="flex items-center gap-2">
-                          <span className="w-28 text-slate-400 truncate">{f.feature}</span>
-                          <div className="flex-1 h-2 rounded-full bg-[#0a0e1a] overflow-hidden">
+                          <span className="w-28 text-zinc-600 truncate font-mono text-[10px]">
+                            {f.feature}
+                          </span>
+                          <div className="flex-1 h-1.5 rounded-full bg-zinc-100 overflow-hidden">
                             <div
-                              className={`h-full rounded-full ${f.positive ? "bg-cyan-500" : "bg-red-500"}`}
+                              className={`h-full rounded-full ${
+                                f.positive ? "bg-[#0F766E]" : "bg-zinc-400"
+                              }`}
                               style={{ width: `${Math.abs(parseFloat(f.contribution)) * 500}%` }}
                             />
                           </div>
-                          <span className={`font-mono w-12 text-right ${f.positive ? "text-cyan-400" : "text-red-400"}`}>
+                          <span
+                            className={`font-mono text-[10px] font-medium w-12 text-right ${
+                              f.positive ? "text-[#0F766E]" : "text-zinc-600"
+                            }`}
+                          >
                             {f.contribution}
                           </span>
                         </div>
@@ -404,26 +591,48 @@ export default function Pipeline() {
                   )}
                 </div>
 
-                {/* Stage 7: Report Generation */}
-                <div className={`glass-panel p-5 transition-opacity duration-300 ${stageResults[7].status !== "complete" ? "opacity-30" : ""}`}>
-                  <div className="flex items-center gap-2 mb-3">
-                    <FileText className="w-4 h-4 text-cyan-400" />
-                    <h4 className="font-mono text-sm font-semibold text-slate-200">Research Report</h4>
-                    {stageResults[7].status === "complete" && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 ml-auto" />}
+                {/* Stage 7: PDF Report Generation */}
+                <div
+                  className={`tx-card p-6 transition-opacity duration-300 md:col-span-2 lg:col-span-3 ${
+                    stageResults[7].status !== "complete" ? "opacity-30" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <FileText size={18} weight="regular" className="text-[#0F766E]" />
+                      <h4 className="font-sans text-sm font-semibold text-zinc-950">
+                        Research Summary Report
+                      </h4>
+                    </div>
+                    {stageResults[7].status === "complete" && (
+                      <CheckCircle size={16} weight="fill" className="text-[#0F766E]" />
+                    )}
                   </div>
                   {stageResults[7].status === "complete" && (
-                    <div className="space-y-3">
-                      <div className="p-3 rounded-lg bg-emerald-500/5 border border-emerald-500/20">
-                        <p className="text-xs text-emerald-400 font-mono mb-1">Report Generated</p>
-                        <p className="text-sm text-slate-300 font-mono">targetx_report_osdreb1a_2024.pdf</p>
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-4 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                      <div>
+                        <span className="font-sans text-sm font-semibold text-zinc-950 block">
+                          targetx_report_osdreb1a_2026.pdf
+                        </span>
+                        <span className="text-xs text-zinc-500 font-sans">
+                          Contains candidate rankings, cleavage probability, and SHAP attribution plots.
+                        </span>
                       </div>
-                      <div className="flex gap-2">
-                        <Button onClick={downloadReport} size="sm" variant="outline" className="border-cyan-500/30 text-cyan-400 text-xs font-mono h-8">
-                          <FileText className="w-3 h-3 mr-1" /> PDF
-                        </Button>
-                        <Button onClick={copyData} size="sm" variant="outline" className="border-slate-700 text-slate-400 text-xs font-mono h-8">
-                          <Copy className="w-3 h-3 mr-1" /> Copy Data
-                        </Button>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={downloadReport}
+                          className="tx-btn-primary px-4 h-9 text-xs font-medium flex items-center gap-1.5"
+                        >
+                          <DownloadSimple size={14} weight="regular" />
+                          Download PDF
+                        </button>
+                        <button
+                          onClick={copyData}
+                          className="tx-btn-secondary px-4 h-9 text-xs font-medium flex items-center gap-1.5"
+                        >
+                          <Copy size={14} weight="regular" />
+                          Copy JSON
+                        </button>
                       </div>
                     </div>
                   )}
@@ -432,47 +641,76 @@ export default function Pipeline() {
             )}
           </AnimatePresence>
 
-          {/* Idle State — Quick Info Panels */}
+          {/* Idle State Overview Details */}
           {pipelineStatus === "idle" && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-cyan-400 mb-3">Supported Organisms</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {["Human (hg38)", "Mouse (mm39)", "Rice (IRGSP)", "E. coli (K12)", "S. cerevisiae", "A. thaliana"].map((o) => (
-                    <div key={o} className="text-[10px] font-mono text-slate-400 px-2 py-1.5 rounded bg-white/[0.02] border border-cyan-500/5">
-                      {o}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="tx-card p-6 md:p-7">
+                <span className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-500 block mb-3">
+                  Reference Genomes
+                </span>
+                <div className="grid grid-cols-2 gap-2 text-xs font-sans">
+                  {[
+                    "Human (GRCh38 / hg38)",
+                    "Mouse (GRCm39 / mm39)",
+                    "Rice (IRGSP-1.0)",
+                    "Arabidopsis (TAIR10)",
+                    "E. coli (K-12 MG1655)",
+                    "Yeast (S288C)",
+                  ].map((org) => (
+                    <div
+                      key={org}
+                      className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/70 text-zinc-700 font-medium truncate"
+                    >
+                      {org}
                     </div>
                   ))}
                 </div>
               </div>
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-cyan-400 mb-3">Pipeline Stages</h4>
-                <div className="space-y-2">
+
+              <div className="tx-card p-6 md:p-7">
+                <span className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-500 block mb-3">
+                  Pipeline Steps
+                </span>
+                <div className="space-y-2 text-xs font-sans">
                   {stages.map((s) => {
                     const Icon = s.icon;
                     return (
-                      <div key={s.id} className="flex items-center gap-2">
-                        <Icon className="w-3 h-3 text-cyan-500/40" />
-                        <span className="text-[10px] font-mono text-slate-400">{s.label}</span>
+                      <div key={s.id} className="flex items-center gap-2.5 text-zinc-700">
+                        <Icon size={16} weight="regular" className="text-zinc-500 flex-shrink-0" />
+                        <span>{s.label}</span>
                       </div>
                     );
                   })}
                 </div>
               </div>
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-cyan-400 mb-3">Parameters</h4>
-                <div className="space-y-2 text-[10px] font-mono">
-                  <div className="flex justify-between"><span className="text-slate-500">Genome</span><span className="text-slate-300">hg38 / mm39 / custom</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">PAM Type</span><span className="text-slate-300">NGG (SpCas9)</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Max Mismatches</span><span className="text-slate-300">1–5</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Model</span><span className="text-slate-300">XGB + LGB + RF</span></div>
-                  <div className="flex justify-between"><span className="text-slate-500">Off-target DB</span><span className="text-slate-300">Cas-OFFinder</span></div>
+
+              <div className="tx-card p-6 md:p-7">
+                <span className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-500 block mb-3">
+                  Default Parameters
+                </span>
+                <div className="space-y-2 text-xs font-sans">
+                  <div className="flex justify-between py-1 border-b border-zinc-200/50">
+                    <span className="text-zinc-500">PAM Specificity</span>
+                    <span className="font-mono font-medium text-zinc-950">5'-NGG-3' (SpCas9)</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-zinc-200/50">
+                    <span className="text-zinc-500">Guide Length</span>
+                    <span className="font-mono font-medium text-zinc-950">20 nucleotides</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-zinc-200/50">
+                    <span className="text-zinc-500">Max Off-Target Mismatches</span>
+                    <span className="font-mono font-medium text-zinc-950">3 mismatches</span>
+                  </div>
+                  <div className="flex justify-between py-1">
+                    <span className="text-zinc-500">Prediction Engine</span>
+                    <span className="font-mono font-medium text-zinc-950">Ensemble Tree Models</span>
+                  </div>
                 </div>
               </div>
             </div>
           )}
         </div>
-      </div>
+      </main>
     </div>
   );
 }
