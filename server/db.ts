@@ -12,12 +12,36 @@ import {
 } from "../drizzle/schema";
 import { ENV } from "./_core/env";
 
+import mysql from "mysql2/promise";
+import fs from "fs";
+import path from "path";
+
 let _db: ReturnType<typeof drizzle> | null = null;
 
 export async function getDb() {
   if (!_db && process.env.DATABASE_URL) {
     try {
-      _db = drizzle(process.env.DATABASE_URL);
+      const caPath = path.resolve(process.cwd(), "certs", "aiven-ca.pem");
+      if (fs.existsSync(caPath)) {
+        const ca = fs.readFileSync(caPath, "utf-8");
+        const cleanUrl = process.env.DATABASE_URL.replace(/\?ssl-mode=REQUIRED(&|$)/, "").replace(/\?$/, "");
+        const u = new URL(cleanUrl.replace(/^mysql:/, "http:"));
+        _db = drizzle({
+          connection: {
+            host: u.hostname,
+            port: parseInt(u.port || "3306"),
+            user: u.username,
+            password: u.password,
+            database: u.pathname.slice(1),
+            ssl: {
+              ca,
+              rejectUnauthorized: true,
+            },
+          },
+        });
+      } else {
+        _db = drizzle(process.env.DATABASE_URL);
+      }
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
       _db = null;
@@ -252,15 +276,15 @@ export async function createGrnaCandidate(input: {
   gcContent: number;
   features?: Record<string, number>;
   scores?: {
-    xgboostScore: number;
-    lightgbmScore: number;
-    randomForestScore: number;
-    ensembleScore: number;
+    xgboostScore?: number;
+    lightgbmScore?: number;
+    randomForestScore?: number | null;
+    ensembleScore?: number;
   };
   finalRank?: number;
   confidence?: "high" | "medium" | "low";
   totalOfftargetSites?: number;
-  offTargetRisk?: "low" | "medium" | "high";
+  offTargetRisk?: "low" | "medium" | "high" | "unassessed";
   seedMismatchCount?: number;
 }) {
   const db = await getDb();
@@ -281,12 +305,12 @@ export async function createGrnaCandidate(input: {
       ...(input.features || {}),
       xgboostScore: input.scores?.xgboostScore ?? 0,
       lightgbmScore: input.scores?.lightgbmScore ?? 0,
-      randomForestScore: input.scores?.randomForestScore ?? 0,
+      randomForestScore: input.scores?.randomForestScore ?? null,
       ensembleScore: input.scores?.ensembleScore ?? 0,
       finalRank: input.finalRank || 0,
       confidence: input.confidence || "medium",
       totalOfftargetSites: input.totalOfftargetSites ?? 0,
-      offTargetRisk: input.offTargetRisk || "low",
+      offTargetRisk: input.offTargetRisk || "unassessed",
       seedMismatchCount: input.seedMismatchCount ?? 0,
     })
     .$returningId();

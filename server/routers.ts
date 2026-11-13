@@ -5,6 +5,7 @@ import { protectedProcedure, publicProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import * as db from "./db";
+import { runBackendPipeline } from "./pipeline/stageHandlers";
 
 /* ──────────────────────────────────────────────────────────────────────────────
    TargetX tRPC Router
@@ -131,7 +132,7 @@ export const appRouter = router({
           stageOrder: z.number().min(0).max(8),
           inputSummary: z.string().optional(),
           outputSummary: z.string().optional(),
-          outputData: z.record(z.unknown()).optional(),
+          outputData: z.record(z.string(), z.unknown()).optional(),
         })
       )
       .mutation(async ({ input }) => {
@@ -145,7 +146,7 @@ export const appRouter = router({
           stageId: z.number(),
           status: z.enum(["pending", "running", "complete", "error"]).optional(),
           outputSummary: z.string().optional(),
-          outputData: z.record(z.unknown()).optional(),
+          outputData: z.record(z.string(), z.unknown()).optional(),
           completedAt: z.coerce.date().optional(),
           error: z.string().optional(),
         })
@@ -184,7 +185,7 @@ export const appRouter = router({
           organism: project?.organism || "Homo sapiens",
           genome: project?.genome || "hg38",
           pamType: project?.pamType || "NGG",
-        }).catch((err) => console.error("Pipeline execution error:", err));
+        }).catch((err: unknown) => console.error("Pipeline execution error:", err));
 
         return { success: true, projectId: input.projectId };
       }),
@@ -276,19 +277,19 @@ export const appRouter = router({
           endPosition: z.number().optional(),
           strand: z.string().optional(),
           gcContent: z.number().min(0).max(1),
-          features: z.record(z.number()).optional(),
+          features: z.record(z.string(), z.number()).optional(),
           scores: z
             .object({
-              xgboostScore: z.number(),
-              lightgbmScore: z.number(),
-              randomForestScore: z.number(),
-              ensembleScore: z.number(),
+              xgboostScore: z.number().optional(),
+              lightgbmScore: z.number().optional(),
+              randomForestScore: z.number().nullable().optional(),
+              ensembleScore: z.number().optional(),
             })
             .optional(),
           finalRank: z.number().optional(),
           confidence: z.enum(["high", "medium", "low"]).optional(),
           totalOfftargetSites: z.number().optional(),
-          offTargetRisk: z.enum(["low", "medium", "high"]).optional(),
+          offTargetRisk: z.enum(["low", "medium", "high", "unassessed"]).optional(),
           seedMismatchCount: z.number().optional(),
         })
       )
@@ -404,8 +405,8 @@ export const appRouter = router({
           reportTitle: z.string().min(1),
           executiveSummary: z.string().optional(),
           methodology: z.string().optional(),
-          results: z.record(z.unknown()).optional(),
-          topCandidates: z.array(z.record(z.unknown())).optional(),
+          results: z.record(z.string(), z.unknown()).optional(),
+          topCandidates: z.array(z.record(z.string(), z.unknown())).optional(),
           recommendations: z.string().optional(),
         })
       )

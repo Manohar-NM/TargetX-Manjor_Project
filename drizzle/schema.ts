@@ -129,14 +129,14 @@ export const grnaCandidates = mysqlTable("grnaCandidates", {
   /* ── Prediction Scores ── */
   xgboostScore: double("xgboostScore").default(0),
   lightgbmScore: double("lightgbmScore").default(0),
-  randomForestScore: double("randomForestScore").default(0),
+  randomForestScore: double("randomForestScore"),
   ensembleScore: double("ensembleScore").default(0),
   finalRank: int("finalRank").default(0),
   confidence: mysqlEnum("confidence", ["high", "medium", "low"]).default("medium"),
 
   /* ── Off-target Metrics ── */
   totalOfftargetSites: int("totalOfftargetSites").default(0),
-  offTargetRisk: mysqlEnum("offTargetRisk", ["low", "medium", "high"]).default("low"),
+  offTargetRisk: mysqlEnum("offTargetRisk", ["low", "medium", "high", "unassessed"]).default("unassessed"),
   seedMismatchCount: int("seedMismatchCount").default(0),
 
   createdAt: timestamp("createdAt").defaultNow().notNull(),
