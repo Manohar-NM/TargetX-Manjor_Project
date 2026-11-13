@@ -40,47 +40,56 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
-  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --font-sans: "Geist", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Geist Mono", monospace;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Genome Noir dark theme tokens */
-  --background: oklch(0.12 0.02 245);
-  --foreground: oklch(0.93 0.01 245);
-  --card: oklch(0.16 0.02 245);
-  --card-foreground: oklch(0.93 0.01 245);
-  --popover: oklch(0.16 0.02 245);
-  --popover-foreground: oklch(0.93 0.01 245);
-  --primary: oklch(0.72 0.15 195);
-  --primary-foreground: oklch(0.12 0.02 245);
-  --secondary: oklch(0.20 0.02 245);
-  --secondary-foreground: oklch(0.80 0.02 245);
-  --muted: oklch(0.22 0.015 245);
-  --muted-foreground: oklch(0.65 0.02 245);
-  --accent: oklch(0.22 0.03 245);
-  --accent-foreground: oklch(0.93 0.01 245);
-  --destructive: oklch(0.63 0.22 25);
-  --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.28 0.03 245);
-  --input: oklch(0.22 0.02 245);
-  --ring: oklch(0.72 0.15 195);
-  --chart-1: oklch(0.72 0.15 195);
-  --chart-2: oklch(0.65 0.20 260);
-  --chart-3: oklch(0.70 0.18 150);
-  --chart-4: oklch(0.75 0.15 80);
-  --chart-5: oklch(0.65 0.22 25);
-  --sidebar: oklch(0.14 0.02 245);
-  --sidebar-foreground: oklch(0.85 0.02 245);
-  --sidebar-primary: oklch(0.72 0.15 195);
-  --sidebar-primary-foreground: oklch(0.12 0.02 245);
-  --sidebar-accent: oklch(0.20 0.03 245);
-  --sidebar-accent-foreground: oklch(0.93 0.01 245);
-  --sidebar-border: oklch(0.25 0.03 245);
-  --sidebar-ring: oklch(0.72 0.15 195);
+  --radius: 0.75rem; /* rounded-xl for default components */
+  
+  /* TargetX Pure CSS Tokens */
+  --background: #f5f5f4;
+  --foreground: #09090b; /* zinc-950 */
+  --card: #ffffff;
+  --card-foreground: #09090b;
+  --popover: #ffffff;
+  --popover-foreground: #09090b;
+  --primary: #09090b; /* zinc-950 primary buttons */
+  --primary-foreground: #ffffff;
+  --secondary: #ffffff;
+  --secondary-foreground: #09090b;
+  --muted: #f4f4f5; /* zinc-100 */
+  --muted-foreground: #52525b; /* zinc-600 */
+  --subtle-foreground: #a1a1aa; /* zinc-400 */
+  --accent: #0f766e; /* teal #0F766E */
+  --accent-hover: #115e59; /* teal hover #115E59 */
+  --accent-foreground: #ffffff;
+  --accent-subtle: #f0fdfa; /* teal 50 */
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: rgba(228, 228, 231, 0.6); /* zinc-200/60 */
+  --border-solid: #e4e4e7; /* zinc-200 */
+  --input: #ffffff;
+  --ring: #0f766e;
+  
+  /* Charts: Single teal series plus zinc neutrals */
+  --chart-1: #0f766e;
+  --chart-2: #71717a;
+  --chart-3: #a1a1aa;
+  --chart-4: #d4d4d8;
+  --chart-5: #e4e4e7;
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #52525b;
+  --sidebar-primary: #09090b;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f4f4f5;
+  --sidebar-accent-foreground: #09090b;
+  --sidebar-border: rgba(228, 228, 231, 0.6);
+  --sidebar-ring: #0f766e;
 }
 
 @layer base {
@@ -88,7 +97,11 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-sans;
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   button:not(:disabled),
   [role="button"]:not([aria-disabled="true"]),
@@ -101,113 +114,116 @@
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
   }
-  /* Custom scrollbar for dark theme */
+  
+  /* Subtle custom scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
   ::-webkit-scrollbar-track {
-    background: oklch(0.14 0.02 245);
+    background: transparent;
   }
   ::-webkit-scrollbar-thumb {
-    background: oklch(0.30 0.03 245);
-    border-radius: 3px;
+    background: rgba(161, 161, 170, 0.4);
+    border-radius: 9999px;
   }
   ::-webkit-scrollbar-thumb:hover {
-    background: oklch(0.40 0.05 245);
+    background: rgba(113, 113, 122, 0.6);
   }
 }
 
 @layer components {
-  .container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  .flex {
-    min-height: 0;
-    min-width: 0;
-  }
-
-  @media (min-width: 640px) {
-    .container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-      max-width: 1280px;
-    }
-  }
-
-  /* Genome Noir glassmorphism panel — High contrast */
-  .glass-panel {
-    background: oklch(0.14 0.02 245 / 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid oklch(0.72 0.15 195 / 0.2);
-    border-radius: var(--radius-lg);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  }
-
-  .glass-panel:hover {
-    border-color: oklch(0.72 0.15 195 / 0.4);
-    box-shadow: 0 0 25px oklch(0.72 0.15 195 / 0.15);
-  }
-
-  /* Glow effects */
-  .glow-cyan {
-    box-shadow: 0 0 15px oklch(0.72 0.15 195 / 0.3), 0 0 30px oklch(0.72 0.15 195 / 0.1);
-  }
-
-  .glow-cyan-subtle {
-    box-shadow: 0 0 10px oklch(0.72 0.15 195 / 0.15);
-  }
-
-  /* Active pipeline node glow */
-  .pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 5px oklch(0.72 0.15 195 / 0.3); }
-    50% { box-shadow: 0 0 20px oklch(0.72 0.15 195 / 0.6), 0 0 40px oklch(0.72 0.15 195 / 0.2); }
-  }
-
-  /* DNA sequence text styling */
-  .sequence-text {
-    font-family: var(--font-mono);
-    letter-spacing: 0.05em;
-  }
-
-  /* Circuit trace background — full intensity */
-  .circuit-bg {
-    background-image: url('/manus-storage/circuit-pattern_85f00189.png');
-    background-size: 550px 550px;
-    background-position: center;
-    background-repeat: repeat;
-    background-attachment: fixed;
-  }
-
-  /* Circuit trace background — interior pages */
+  /* Background: Soft blue gradient fading into off-white #F5F5F4 */
+  .circuit-bg,
   .circuit-bg-subtle {
-    background-image: url('/manus-storage/circuit-pattern_85f00189.png');
-    background-size: 550px 550px;
-    background-position: center;
-    background-repeat: repeat;
+    background-color: #f5f5f4;
+    background-image: radial-gradient(125% 125% at 50% -50%, #c7d2fe 40%, transparent 100%);
     background-attachment: fixed;
+    background-size: cover;
+    min-height: 100dvh;
+  }
+
+  /* TargetX Elevated Card Token: white, rounded-3xl, border zinc-200/60, tinted diffusion shadow */
+  .tx-card {
+    background-color: #ffffff;
+    border: 1px solid rgba(228, 228, 231, 0.6);
+    border-radius: 1.5rem; /* rounded-3xl */
+    box-shadow: 0 20px 40px -15px rgba(15, 23, 42, 0.06);
+  }
+
+  /* Primary Button styling */
+  .tx-btn-primary {
+    background-color: #09090b;
+    color: #ffffff;
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tx-btn-primary:hover {
+    background-color: #27272a;
+  }
+  .tx-btn-primary:active {
+    transform: scale(0.98);
+  }
+  .tx-btn-primary:focus-visible {
+    outline: 2px solid #0f766e;
+    outline-offset: 2px;
+  }
+
+  /* Secondary Button styling */
+  .tx-btn-secondary {
+    background-color: #ffffff;
+    color: #09090b;
+    border: 1px solid #e4e4e7;
+    border-radius: 0.75rem; /* rounded-xl */
+    transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .tx-btn-secondary:hover {
+    background-color: #f4f4f5;
+    border-color: #d4d4d8;
+  }
+  .tx-btn-secondary:active {
+    transform: scale(0.98);
+  }
+  .tx-btn-secondary:focus-visible {
+    outline: 2px solid #0f766e;
+    outline-offset: 2px;
+  }
+
+  /* Subtle pulsing teal status dot */
+  .status-pulse-teal {
+    animation: status-pulse-teal 2.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes status-pulse-teal {
+    0%, 100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.55;
+      transform: scale(1.15);
+    }
+  }
+
+  /* Scanning highlight across hero gRNA sequence */
+  @keyframes hero-scan {
+    0% {
+      transform: translateX(-120%);
+    }
+    50%, 100% {
+      transform: translateX(250%);
+    }
+  }
+
+  .animate-hero-scan {
+    animation: hero-scan 4.5s ease-in-out infinite;
   }
 }
 
 /* Prefers reduced motion */
 @media (prefers-reduced-motion: reduce) {
-  .pulse-glow {
+  .status-pulse-teal,
+  .animate-hero-scan {
     animation: none;
   }
   * {

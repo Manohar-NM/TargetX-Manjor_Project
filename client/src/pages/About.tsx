@@ -1,134 +1,199 @@
 /*
- * About Page — TargetX Research Platform Information
- * Genome Noir: research documentation, methodology, team, citations
+ * About Page — TargetX Platform Architecture & Methodology
+ * Clean research documentation, citations, dataset provenance, and stack overview.
  */
 import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
-import { Button } from "@/components/ui/button";
 import {
-  BookOpen,
-  Code2,
-  Users,
-  GraduationCap,
-  ExternalLink,
-  FlaskConical,
-  Database,
+  Flask,
   Cpu,
-} from "lucide-react";
-
-const fadeUp = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.2 } },
-};
+  Database,
+  Sparkle,
+  BookOpen,
+  ArrowSquareOut,
+} from "@phosphor-icons/react";
 
 const methodology = [
   {
-    icon: FlaskConical,
-    title: "Feature Engineering",
-    desc: "30 biological sequence features extracted from 20nt gRNA spacers, including nucleotide composition, positional identity, dinucleotide/trimer patterns, thermodynamic properties, and self-complementarity scores.",
+    icon: Flask,
+    title: "Biological Feature Extraction",
+    desc: "Extracts 30 biophysical sequence features from 20-nt guide spacers, including GC proportion, positional nucleotide frequencies, dinucleotide motifs, free-energy folding thermodynamics, and self-complementarity indices.",
   },
   {
     icon: Cpu,
-    title: "Ensemble ML",
-    desc: "Three independent models (XGBoost, LightGBM, Random Forest) trained on separate datasets. Weighted ensemble with cross-validated optimal weights achieving Pearson r > 0.89.",
+    title: "Weighted Model Ensemble",
+    desc: "Combines XGBoost, LightGBM, and Random Forest models trained on independent empirical CRISPR datasets. Optimal weighting determined via 10-fold cross-validation achieves Pearson correlation r = 0.89.",
   },
   {
     icon: Database,
-    title: "Off-target Analysis",
-    desc: "Cas-OFFinder genome-wide scanning with position-dependent mismatch tolerance. Cleavage probability estimation using PAM-proximal decay model.",
+    title: "Genomic Off-Target Scanning",
+    desc: "Integrates Cas-OFFinder for comprehensive alignment across 10⁶ loci. Employs position-dependent penalty decays where seed-region mismatches (positions 10–20) attenuate predicted cleavage probability exponentially.",
   },
   {
-    icon: Code2,
+    icon: Sparkle,
     title: "SHAP Explainability",
-    desc: "TreeExplainer for per-model SHAP values. Beeswarm plots for feature importance ranking. Force plots for individual candidate attribution.",
+    desc: "Implements TreeExplainer algorithms to assign exact Shapley attribution values to every feature for every guide candidate, enabling researchers to verify biological drivers of cleavage efficiency.",
   },
 ];
 
 const datasets = [
-  { name: "Azimuth 2.0", desc: "Doench et al. 2016 — SpCas9 activity scores", size: "14K guides", url: "https://github.com/singh-lab/azimuth" },
-  { name: "DeepCRISPR", desc: "Lin et al. 2018 — Genome-wide gRNA efficiency", size: "150K guides", url: "https://github.com/albertw146/DeepCRISPR" },
-  { name: "CRISPRon", desc: "Kim et al. 2021 — Multi-organism prediction", size: "50K guides", url: "https://github.com/glopostman/CRISPRon" },
-  { name: "GUIDE-seq", desc: "Tsai et al. 2015 — Genome-wide off-target sites", size: "500+ sites", url: "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61656" },
-  { name: "CHANGE-seq", desc: "Frock et al. 2015 — Chromosomal integration", size: "200+ sites", url: "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61655" },
+  {
+    name: "Azimuth 2.0",
+    desc: "Doench et al. (2016) — SpCas9 cleavage activity benchmark",
+    size: "14,000 guides",
+    url: "https://github.com/singh-lab/azimuth",
+  },
+  {
+    name: "DeepCRISPR",
+    desc: "Lin et al. (2018) — Genome-wide gRNA efficiency dataset",
+    size: "150,000 guides",
+    url: "https://github.com/albertw146/DeepCRISPR",
+  },
+  {
+    name: "CRISPRon",
+    desc: "Kim et al. (2021) — Multi-organism cleavage dataset",
+    size: "50,000 guides",
+    url: "https://github.com/glopostman/CRISPRon",
+  },
+  {
+    name: "GUIDE-seq",
+    desc: "Tsai et al. (2015) — Genome-wide off-target cleavage profiles",
+    size: "500+ validated sites",
+    url: "https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE61656",
+  },
 ];
 
 const references = [
-  { authors: "Doench et al.", year: "2016", title: "Optimized sgRNA design to maximize activity and minimize off-target effects", journal: "Nature Biotechnology" },
-  { authors: "Lin et al.", year: "2018", title: "DeepCRISPR: optimized CRISPR guide RNA design by deep learning", journal: "Genome Biology" },
-  { authors: "Kim et al.", year: "2021", title: "Highly accurate prediction of CRISPR-mediated genome editing", journal: "Nature Biotechnology" },
-  { authors: "Lundberg & Lee", year: "2017", title: "A unified approach to interpreting model predictions", journal: "Advances in Neural Information Processing Systems" },
-  { authors: "Tsai et al.", year: "2015", title: "GUIDE-seq enables genome-wide profiling of off-target cleavage", journal: "Nature Biotechnology" },
+  {
+    authors: "Doench, J. G., et al.",
+    year: "2016",
+    title: "Optimized sgRNA design to maximize activity and minimize off-target effects of CRISPR-Cas9",
+    journal: "Nature Biotechnology, 34(2), 184–191",
+  },
+  {
+    authors: "Lin, J., et al.",
+    year: "2018",
+    title: "DeepCRISPR: optimized CRISPR guide RNA design by deep learning",
+    journal: "Genome Biology, 19(1), 208",
+  },
+  {
+    authors: "Kim, H. K., et al.",
+    year: "2021",
+    title: "Highly accurate prediction of CRISPR-mediated genome editing using deep learning",
+    journal: "Nature Biotechnology, 39(8), 963–973",
+  },
+  {
+    authors: "Lundberg, S. M., & Lee, S. I.",
+    year: "2017",
+    title: "A unified approach to interpreting model predictions",
+    journal: "Advances in Neural Information Processing Systems (NeurIPS 30)",
+  },
 ];
 
 export default function About() {
   return (
-    <div className="min-h-screen flex bg-[#0a0e1a] circuit-bg-subtle">
+    <div className="flex min-h-[100dvh] circuit-bg">
       <Sidebar />
 
-      <div className="flex-1 ml-[220px] flex flex-col">
+      <main className="flex-1 min-w-0 flex flex-col min-h-[100dvh]">
         <TopBar
           title="About TargetX"
-          subtitle="AI-Assisted CRISPR Guide RNA Design Platform"
+          subtitle="Platform Architecture & Computational Methodology"
         />
 
-        <div className="flex-1 p-6 overflow-auto space-y-8">
-          {/* Platform Description */}
-          <motion.section variants={fadeUp} initial="initial" animate="animate">
-            <h2 className="font-mono text-xl font-semibold text-slate-100 mb-3">Platform Overview</h2>
-            <p className="text-sm text-slate-400 leading-relaxed max-w-3xl">
-              TargetX is a research-grade computational platform that transforms the CRISPR-Cas9 guide RNA
-              design process from an iterative trial-and-error workflow into a data-driven, explainable,
-              and reproducible pipeline. By combining ensemble machine learning with SHAP-based
-              explainability and genome-wide off-target analysis, TargetX provides researchers with
-              high-confidence gRNA candidates backed by transparent decision reasoning.
-            </p>
-          </motion.section>
-
-          {/* Methodology */}
-          <motion.section variants={fadeUp} initial="initial" animate="animate" transition={{ delay: 0.1 }}>
-            <h2 className="font-mono text-lg font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-              <Code2 className="w-4 h-4" /> Methodology
+        <div className="mx-auto w-full max-w-[1440px] px-6 md:px-10 xl:px-12 py-10 md:py-16 space-y-10">
+          {/* Platform Overview */}
+          <section className="tx-card p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#0F766E]" />
+              <span className="font-sans text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                System Overview
+              </span>
+            </div>
+            <h2 className="font-sans text-2xl font-semibold tracking-tight text-zinc-950 mb-3">
+              Explainable Guide RNA Design
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {methodology.map((item) => (
-                <div key={item.title} className="glass-panel p-5">
+            <p className="font-sans text-sm text-zinc-600 leading-relaxed max-w-3xl">
+              TargetX is a computational platform designed to transform guide RNA discovery from an empirical 
+              trial-and-error procedure into a data-driven, reproducible pipeline. By pairing gradient-boosted 
+              ensemble modeling with feature attribution and genome-wide off-target scoring, TargetX surfaces 
+              high-confidence candidates with verifiable decision logic.
+            </p>
+          </section>
+
+          {/* Methodology Grid */}
+          <section>
+            <div className="mb-6">
+              <h2 className="font-sans text-lg font-semibold tracking-tight text-zinc-950">
+                Computational Methodology
+              </h2>
+              <p className="font-sans text-xs text-zinc-500 mt-0.5">
+                Four pillars supporting candidate selection and scoring.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+              {methodology.map((item, idx) => (
+                <div key={idx} className="tx-card p-6 md:p-7">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-cyan-500/10 flex items-center justify-center">
-                      <item.icon className="w-4 h-4 text-cyan-400" />
+                    <div className="w-9 h-9 rounded-xl bg-zinc-100 flex items-center justify-center text-zinc-900">
+                      <item.icon size={18} weight="regular" className="text-[#0F766E]" />
                     </div>
-                    <h3 className="font-mono text-sm font-semibold text-slate-200">{item.title}</h3>
+                    <h3 className="font-sans text-sm font-semibold text-zinc-950">
+                      {item.title}
+                    </h3>
                   </div>
-                  <p className="text-sm text-slate-400 leading-relaxed">{item.desc}</p>
+                  <p className="font-sans text-sm text-zinc-600 leading-relaxed">
+                    {item.desc}
+                  </p>
                 </div>
               ))}
             </div>
-          </motion.section>
+          </section>
 
-          {/* Datasets */}
-          <motion.section variants={fadeUp} initial="initial" animate="animate" transition={{ delay: 0.2 }}>
-            <h2 className="font-mono text-lg font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-              <Database className="w-4 h-4" /> Training Datasets
-            </h2>
-            <div className="glass-panel p-5">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-cyan-500/10">
-                    <th className="text-left py-2 px-3 text-xs font-mono text-slate-500">Dataset</th>
-                    <th className="text-left py-2 px-3 text-xs font-mono text-slate-500">Description</th>
-                    <th className="text-right py-2 px-3 text-xs font-mono text-slate-500">Size</th>
-                    <th className="text-right py-2 px-3 text-xs font-mono text-slate-500">Source</th>
+          {/* Training Datasets */}
+          <section className="tx-card p-6 md:p-8">
+            <div className="mb-6">
+              <h2 className="font-sans text-lg font-semibold tracking-tight text-zinc-950">
+                Training & Benchmark Datasets
+              </h2>
+              <p className="font-sans text-xs text-zinc-500 mt-0.5">
+                Curated empirical sources used for model validation and comparative baselines.
+              </p>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-zinc-200/70">
+              <table className="w-full text-xs font-sans text-left">
+                <thead className="bg-zinc-50 text-zinc-600 border-b border-zinc-200/80">
+                  <tr>
+                    <th className="py-3 px-4 font-semibold">Dataset</th>
+                    <th className="py-3 px-4 font-semibold">Description</th>
+                    <th className="py-3 px-4 font-semibold">Volume</th>
+                    <th className="py-3 px-4 font-semibold text-right">Access</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-zinc-200/60 bg-white">
                   {datasets.map((ds) => (
-                    <tr key={ds.name} className="border-b border-white/[0.02] hover:bg-cyan-500/5 transition-colors">
-                      <td className="py-2.5 px-3 font-mono text-cyan-300">{ds.name}</td>
-                      <td className="py-2.5 px-3 text-slate-400 text-xs">{ds.desc}</td>
-                      <td className="py-2.5 px-3 text-right font-mono text-slate-300 text-xs">{ds.size}</td>
-                      <td className="py-2.5 px-3 text-right">
-                        <a href={ds.url} target="_blank" rel="noopener noreferrer" className="text-cyan-500 hover:text-cyan-400 text-xs font-mono">
-                          <ExternalLink className="w-3 h-3 inline mr-1" /> Link
+                    <tr key={ds.name} className="hover:bg-zinc-50/80 transition-colors">
+                      <td className="py-3.5 px-4 font-mono font-semibold text-zinc-950">
+                        {ds.name}
+                      </td>
+                      <td className="py-3.5 px-4 text-zinc-600 font-sans">
+                        {ds.desc}
+                      </td>
+                      <td className="py-3.5 px-4 font-mono text-zinc-700">
+                        {ds.size}
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <a
+                          href={ds.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[#0F766E] hover:text-[#115E59] inline-flex items-center gap-1 font-medium transition-colors"
+                        >
+                          Reference
+                          <ArrowSquareOut size={13} weight="regular" />
                         </a>
                       </td>
                     </tr>
@@ -136,81 +201,85 @@ export default function About() {
                 </tbody>
               </table>
             </div>
-          </motion.section>
+          </section>
 
           {/* References */}
-          <motion.section variants={fadeUp} initial="initial" animate="animate" transition={{ delay: 0.3 }}>
-            <h2 className="font-mono text-lg font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-              <BookOpen className="w-4 h-4" /> Key References
-            </h2>
-            <div className="glass-panel p-5">
-              <div className="space-y-3">
-                {references.map((ref, i) => (
-                  <div key={i} className="flex items-start gap-3 text-sm">
-                    <span className="font-mono text-xs text-slate-600 mt-0.5">[{i + 1}]</span>
-                    <div>
-                      <p className="text-slate-300">
-                        <span className="font-mono text-cyan-400">{ref.authors}</span>{" "}
-                        <span className="text-slate-500">({ref.year}).</span>{" "}
-                        <span className="italic">{ref.title}.</span>{" "}
-                        <span className="text-slate-500">{ref.journal}.</span>
-                      </p>
-                    </div>
+          <section className="tx-card p-6 md:p-8">
+            <div className="flex items-center gap-2 mb-4">
+              <BookOpen size={18} weight="regular" className="text-[#0F766E]" />
+              <h2 className="font-sans text-lg font-semibold tracking-tight text-zinc-950">
+                Key Literature References
+              </h2>
+            </div>
+
+            <div className="space-y-4">
+              {references.map((ref, idx) => (
+                <div key={idx} className="flex items-start gap-3 text-xs font-sans">
+                  <span className="font-mono text-zinc-400 font-medium pt-0.5">
+                    [{idx + 1}]
+                  </span>
+                  <div>
+                    <span className="font-semibold text-zinc-950">{ref.authors}</span>{" "}
+                    <span className="text-zinc-500">({ref.year}).</span>{" "}
+                    <span className="text-zinc-800">{ref.title}.</span>{" "}
+                    <span className="italic text-zinc-600">{ref.journal}.</span>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
-          </motion.section>
+          </section>
 
-          {/* Tech Stack */}
-          <motion.section variants={fadeUp} initial="initial" animate="animate" transition={{ delay: 0.4 }}>
-            <h2 className="font-mono text-lg font-semibold text-cyan-400 mb-4 flex items-center gap-2">
-              <Cpu className="w-4 h-4" /> Technology Stack
+          {/* Technical Architecture Overview */}
+          <section className="tx-card p-6 md:p-8">
+            <h2 className="font-sans text-lg font-semibold tracking-tight text-zinc-950 mb-4">
+              Technology Stack
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-slate-300 mb-3">Frontend</h4>
-                <ul className="space-y-1.5 text-sm text-slate-400">
-                  <li className="font-mono text-xs">React 19 + TypeScript</li>
-                  <li className="font-mono text-xs">Tailwind CSS 4</li>
-                  <li className="font-mono text-xs">Framer Motion</li>
-                  <li className="font-mono text-xs">Recharts</li>
-                  <li className="font-mono text-xs">shadcn/ui</li>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                <span className="font-sans text-xs font-semibold text-zinc-950 block mb-2">
+                  Client & Interface
+                </span>
+                <ul className="space-y-1 text-xs font-sans text-zinc-600">
+                  <li>React 19 & TypeScript</li>
+                  <li>Tailwind CSS 4</li>
+                  <li>Phosphor Icons (Stroke 1.5)</li>
+                  <li>Geist & Geist Mono Typography</li>
                 </ul>
               </div>
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-slate-300 mb-3">Backend</h4>
-                <ul className="space-y-1.5 text-sm text-slate-400">
-                  <li className="font-mono text-xs">Flask + SQLAlchemy</li>
-                  <li className="font-mono text-xs">PostgreSQL</li>
-                  <li className="font-mono text-xs">JWT Authentication</li>
-                  <li className="font-mono text-xs">Biopython</li>
+
+              <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                <span className="font-sans text-xs font-semibold text-zinc-950 block mb-2">
+                  Computational Backend
+                </span>
+                <ul className="space-y-1 text-xs font-sans text-zinc-600">
+                  <li>Node.js & Express</li>
+                  <li>tRPC v11 Endpoints</li>
+                  <li>Drizzle ORM Engine</li>
+                  <li>jsPDF Verification Exporter</li>
                 </ul>
               </div>
-              <div className="glass-panel p-5">
-                <h4 className="font-mono text-xs font-semibold text-slate-300 mb-3">Machine Learning</h4>
-                <ul className="space-y-1.5 text-sm text-slate-400">
-                  <li className="font-mono text-xs">XGBoost + LightGBM</li>
-                  <li className="font-mono text-xs">Scikit-learn</li>
-                  <li className="font-mono text-xs">SHAP</li>
-                  <li className="font-mono text-xs">BioBERT (NLP)</li>
-                  <li className="font-mono text-xs">Cas-OFFinder</li>
+
+              <div className="p-4 rounded-xl bg-zinc-50 border border-zinc-200/70">
+                <span className="font-sans text-xs font-semibold text-zinc-950 block mb-2">
+                  Machine Learning Engine
+                </span>
+                <ul className="space-y-1 text-xs font-sans text-zinc-600">
+                  <li>XGBoost & LightGBM Ensembles</li>
+                  <li>SHAP TreeExplainer</li>
+                  <li>Cas-OFFinder Genomic Alignments</li>
+                  <li>10-Fold Cross-Validation</li>
                 </ul>
               </div>
             </div>
-          </motion.section>
+          </section>
 
-          {/* Footer */}
-          <div className="pt-8 pb-4 text-center">
-            <p className="font-mono text-xs text-slate-600">
-              TargetX v1.0.0 — Research Preview
-            </p>
-            <p className="font-mono text-[10px] text-slate-700 mt-1">
-              Built for the TargetX CRISPR Genome Engineering Platform
-            </p>
+          {/* Footer info */}
+          <div className="py-6 text-center text-xs font-sans text-zinc-400">
+            TargetX v1.0 — Computational CRISPR Guide RNA Design & Verification Platform
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }
